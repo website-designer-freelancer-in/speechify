@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { 
@@ -85,7 +86,7 @@ async function decodeAudioData(
 }
 
 // --- App Component ---
-const SonaVerta = () => {
+const LocalAudioGenerator = () => {
   const [activeTab, setActiveTab] = useState<Tab>('editor');
   const [text, setText] = useState('');
   const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
@@ -128,7 +129,7 @@ const SonaVerta = () => {
   ];
 
   useEffect(() => {
-    const saved = localStorage.getItem('sonaverta_history_v10');
+    const saved = localStorage.getItem('local_audio_history_v1');
     if (saved) {
       try {
         setHistory(JSON.parse(saved));
@@ -141,12 +142,12 @@ const SonaVerta = () => {
   const saveToHistory = (item: AudioHistoryItem) => {
     const newHistory = [item, ...history].slice(0, 50);
     setHistory(newHistory);
-    localStorage.setItem('sonaverta_history_v10', JSON.stringify(newHistory));
+    localStorage.setItem('local_audio_history_v1', JSON.stringify(newHistory));
   };
 
   const handleClearHistory = () => {
     setHistory([]);
-    localStorage.removeItem('sonaverta_history_v10');
+    localStorage.removeItem('local_audio_history_v1');
   };
 
   const playVoiceSample = async (voice: VoiceOption, e: React.MouseEvent) => {
@@ -273,7 +274,7 @@ const SonaVerta = () => {
     const url = URL.createObjectURL(wavBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `SonaVerta-${item.id}.wav`;
+    a.download = `LocalAudio-${item.id}.wav`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -310,7 +311,7 @@ const SonaVerta = () => {
             <Mic className="text-white w-7 h-7" />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-2xl font-black tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">SonaVerta</h1>
+            <h1 className="text-xl font-black tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Local Audio</h1>
             <span className="text-[10px] uppercase tracking-widest text-gray-500 font-black">AI Studio Engine</span>
           </div>
         </div>
@@ -344,9 +345,9 @@ const SonaVerta = () => {
             <Sparkles size={14} className="text-indigo-400" />
             <span className="uppercase tracking-widest font-black">Pro Mastering</span>
           </div>
-          <p className="text-[11px] text-gray-400 leading-relaxed mb-4 font-medium">Unique broadcast-quality narration engine supporting 14+ languages.</p>
+          <p className="text-[11px] text-gray-400 leading-relaxed mb-4 font-medium">Local Audio Generator supports high-fidelity synthesis for 14+ regions.</p>
           <div className="text-[10px] text-indigo-400 flex items-center gap-2 font-bold opacity-70">
-            v10.0 Prime Release
+            v1.0 Prime Release
           </div>
         </div>
       </div>
@@ -363,8 +364,8 @@ const SonaVerta = () => {
             {activeTab === 'editor' ? (
               <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
                 <header>
-                  <h2 className="text-5xl font-black mb-3 tracking-tight">SonaVerta Studio</h2>
-                  <p className="text-gray-500 font-semibold text-lg">Select mandatory options below to synthesize your unique master capture.</p>
+                  <h2 className="text-5xl font-black mb-3 tracking-tight">Audio Studio</h2>
+                  <p className="text-gray-500 font-semibold text-lg">Generate broadcast-quality audio captures with precision AI.</p>
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -490,7 +491,7 @@ const SonaVerta = () => {
                 <header className="flex items-center justify-between">
                   <div>
                     <h2 className="text-5xl font-black mb-3 tracking-tight">Archive Vault</h2>
-                    <p className="text-gray-500 font-semibold text-lg">Manage and download your historical SonaVerta captures.</p>
+                    <p className="text-gray-500 font-semibold text-lg">Manage and download your historical audio captures.</p>
                   </div>
                   {history.length > 0 && (
                     <button 
@@ -537,7 +538,7 @@ const SonaVerta = () => {
                             onClick={() => {
                               const newHistory = history.filter(h => h.id !== item.id);
                               setHistory(newHistory);
-                              localStorage.setItem('sonaverta_history_v10', JSON.stringify(newHistory));
+                              localStorage.setItem('local_audio_history_v1', JSON.stringify(newHistory));
                             }}
                             className="p-4 bg-white/5 border border-white/10 text-gray-500 rounded-[1.25rem] hover:bg-red-600/20 hover:text-red-400 transition-all"
                            >
@@ -605,4 +606,4 @@ const SonaVerta = () => {
   );
 };
 
-createRoot(document.getElementById('root')!).render(<SonaVerta />);
+createRoot(document.getElementById('root')!).render(<LocalAudioGenerator />);
