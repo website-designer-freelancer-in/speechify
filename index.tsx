@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { 
   GoogleGenAI, 
@@ -31,21 +32,10 @@ import {
 
 /** 
  * SONAVERTA PRODUCTION ENGINE
- * Note: For Vercel deployment, move the contents of SonaVertaEngine.synthesize
- * into a serverless function (e.g., /api/tts.ts) and call it via fetch.
  */
 class SonaVertaEngine {
-  private static ai: GoogleGenAI;
-
-  private static getClient() {
-    if (!this.ai) {
-      this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-    }
-    return this.ai;
-  }
-
   static async synthesize(text: string, voiceId: string, model: string = "gemini-2.5-flash-preview-tts") {
-    const ai = this.getClient();
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
     const response = await ai.models.generateContent({
       model: model,
       contents: [{ parts: [{ text }] }],
@@ -145,7 +135,7 @@ const SonaVerta = () => {
     setTimeout(() => setToast(null), 4000);
   };
 
-  const decode = (base64: string) => {
+  const decodeBase64 = (base64: string) => {
     const binaryString = atob(base64);
     const bytes = new Uint8Array(binaryString.length);
     for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
@@ -161,7 +151,7 @@ const SonaVerta = () => {
     if (ctx.state === 'suspended') await ctx.resume();
 
     try {
-      const dataInt16 = new Int16Array(decode(base64).buffer);
+      const dataInt16 = new Int16Array(decodeBase64(base64).buffer);
       const buffer = ctx.createBuffer(1, dataInt16.length, 24000);
       const channelData = buffer.getChannelData(0);
       for (let i = 0; i < dataInt16.length; i++) channelData[i] = dataInt16[i] / 32768.0;
@@ -250,7 +240,7 @@ const SonaVerta = () => {
       )}
 
       {/* Sidebar */}
-      <aside className="w-80 glass-panel border-r border-white/5 flex flex-col p-6 z-40">
+      <aside className="w-80 bg-black/40 backdrop-blur-3xl border-r border-white/5 flex flex-col p-6 z-40">
         <div className="flex items-center gap-4 mb-10 px-2">
           <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group">
             <Mic className="text-white w-7 h-7 group-hover:scale-110 transition-transform" />
@@ -307,7 +297,7 @@ const SonaVerta = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                   <div className="lg:col-span-7 space-y-8">
-                    <div className="glass-panel p-8 rounded-[3rem] border border-white/10 shadow-2xl space-y-6 focus-within:border-indigo-500/50 transition-colors">
+                    <div className="bg-black/40 backdrop-blur-3xl p-8 rounded-[3rem] border border-white/10 shadow-2xl space-y-6 focus-within:border-indigo-500/50 transition-colors">
                       <div className="flex items-center justify-between px-2">
                         <label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 flex items-center gap-2"><Layout size={14} className="text-indigo-500" /> Capture Script</label>
                         <span className="text-[10px] text-indigo-500 font-black bg-indigo-500/10 px-2 py-1 rounded-md">{text.length} CHARS</span>
@@ -347,7 +337,7 @@ const SonaVerta = () => {
 
                   <div className="lg:col-span-5 space-y-6">
                     {/* Region Selector */}
-                    <div className={`glass-panel p-6 rounded-[2.5rem] border transition-all ${!selectedLang ? 'border-indigo-500/40 shadow-[0_0_40px_rgba(79,70,229,0.1)]' : 'border-white/10'}`}>
+                    <div className={`bg-black/40 backdrop-blur-3xl p-6 rounded-[2.5rem] border transition-all ${!selectedLang ? 'border-indigo-500/40 shadow-[0_0_40px_rgba(79,70,229,0.1)]' : 'border-white/10'}`}>
                       <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-6 px-2 flex items-center justify-between">
                          <span className="flex items-center gap-2"><Globe size={14} /> Delivery Region</span>
                          {!selectedLang && <span className="text-red-500 flex items-center gap-1"><AlertCircle size={10} /> Required</span>}
@@ -366,7 +356,7 @@ const SonaVerta = () => {
                     </div>
 
                     {/* Profiles Selector */}
-                    <div className={`glass-panel p-6 rounded-[2.5rem] border transition-all ${!selectedVoice ? 'border-indigo-500/40 shadow-[0_0_40px_rgba(79,70,229,0.1)]' : 'border-white/10'}`}>
+                    <div className={`bg-black/40 backdrop-blur-3xl p-6 rounded-[2.5rem] border transition-all ${!selectedVoice ? 'border-indigo-500/40 shadow-[0_0_40px_rgba(79,70,229,0.1)]' : 'border-white/10'}`}>
                       <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-6 px-2 flex items-center justify-between">
                          <span className="flex items-center gap-2"><Filter size={14} /> Vocal Profile</span>
                          {!selectedVoice && <span className="text-red-500 flex items-center gap-1"><AlertCircle size={10} /> Required</span>}
@@ -412,13 +402,13 @@ const SonaVerta = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {history.length === 0 ? (
-                    <div className="col-span-full glass-panel p-24 rounded-[4rem] flex flex-col items-center justify-center border-dashed border-white/10 opacity-20">
+                    <div className="col-span-full bg-black/40 backdrop-blur-3xl p-24 rounded-[4rem] flex flex-col items-center justify-center border-dashed border-white/10 opacity-20">
                       <Clock size={80} className="mb-6" />
                       <p className="text-2xl font-black uppercase tracking-widest">No historical data found</p>
                     </div>
                   ) : (
                     history.map((item) => (
-                      <div key={item.id} className="glass-panel p-6 rounded-[2.5rem] border border-white/10 hover:border-indigo-500/30 transition-all group">
+                      <div key={item.id} className="bg-black/40 backdrop-blur-3xl p-6 rounded-[2.5rem] border border-white/10 hover:border-indigo-500/30 transition-all group">
                          <div className="flex items-start gap-4 mb-6">
                             <button onClick={() => playFromBase64(item.audioData)} className="w-14 h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-105 transition-transform">
                               <Play size={24} fill="currentColor" />
@@ -432,10 +422,10 @@ const SonaVerta = () => {
                          </div>
                          <div className="flex gap-2">
                             <button onClick={() => {
-                              const pcm = decode(item.audioData);
-                              const blob = new Blob([pcm], { type: 'audio/wav' }); // simplistic placeholder for download
+                              const bytes = decodeBase64(item.audioData);
+                              const blob = new Blob([bytes], { type: 'audio/pcm' });
                               const url = URL.createObjectURL(blob);
-                              const a = document.createElement('a'); a.href = url; a.download = `sonaverta-${item.id}.wav`; a.click();
+                              const a = document.createElement('a'); a.href = url; a.download = `sonaverta-${item.id}.pcm`; a.click();
                             }} className="flex-1 flex items-center justify-center gap-2 py-4 bg-white/5 border border-white/5 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-indigo-950 transition-all">
                                <Download size={14} /> Export Capture
                             </button>
