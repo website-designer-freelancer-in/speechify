@@ -85,7 +85,7 @@ async function decodeAudioData(
 }
 
 // --- App Component ---
-const VoiceForge = () => {
+const SonaVerta = () => {
   const [activeTab, setActiveTab] = useState<Tab>('editor');
   const [text, setText] = useState('');
   const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
@@ -117,8 +117,8 @@ const VoiceForge = () => {
     { code: 'mr-IN', name: 'Marathi', localName: 'मराठी', flag: '🇮🇳', sampleText: 'नमस्कार, हा मराठीतील माझ्या आवाजाचा नमुना आहे.' },
     { code: 'kn-IN', name: 'Kannada', localName: 'ಕನ್ನಡ', flag: '🇮🇳', sampleText: 'ನಮಸ್ಕಾರ, ಇದು ಕನ್ನಡದಲ್ಲಿ ನನ್ನ ಧ್ವನಿಯ ಮಾದರಿಯಾಗಿದೆ.' },
     { code: 'ml-IN', name: 'Malayalam', localName: 'മലയാളം', flag: '🇮🇳', sampleText: 'നമസ്കാരം, ഇത് മലയാളത്തിലുള്ള എന്റെ ശബ്ദത്തിന്റെ മാതൃകയാണ്.' },
-    { code: 'bn-IN', name: 'Bengali', localName: 'বাংলা', flag: '🇮🇳', sampleText: 'নমস্কার, এটি বাংলায় আমার কণ্ঠস্বরের একটি নমুনা।' },
-    { code: 'gu-IN', name: 'Gujarati', localName: 'ગુજરાતી', flag: '🇮🇳', sampleText: 'નમસ્તે, આ ગુજરાતીમાં મારા અવાજનો નમૂનો છે.' },
+    { code: 'bn-IN', name: 'Bengali', localName: 'বাংলা', flag: '🇮🇳', sampleText: 'নমস্কার, এটি বাংলায় আমার কণ্ঠস্বরের একটি नमूना।' },
+    { code: 'gu-IN', name: 'Gujarati', localName: 'ગુજરાતી', flag: '🇮🇳', sampleText: 'नमस्ते, आ गुजराती में मारा अवाजनो नमूने छे.' },
     { code: 'en-US', name: 'English (US)', localName: 'English (US)', flag: '🇺🇸', sampleText: 'Hello, this is a sample of my voice in English.' },
     { code: 'en-GB', name: 'English (UK)', localName: 'English (UK)', flag: '🇬🇧', sampleText: 'Greetings, this is how I sound in British English.' },
     { code: 'es-ES', name: 'Spanish', localName: 'Español', flag: '🇪🇸', sampleText: 'Hola, esta es una muestra de mi voz en español.' },
@@ -128,7 +128,7 @@ const VoiceForge = () => {
   ];
 
   useEffect(() => {
-    const saved = localStorage.getItem('voiceforge_history_v9');
+    const saved = localStorage.getItem('sonaverta_history_v10');
     if (saved) {
       try {
         setHistory(JSON.parse(saved));
@@ -141,12 +141,12 @@ const VoiceForge = () => {
   const saveToHistory = (item: AudioHistoryItem) => {
     const newHistory = [item, ...history].slice(0, 50);
     setHistory(newHistory);
-    localStorage.setItem('voiceforge_history_v9', JSON.stringify(newHistory));
+    localStorage.setItem('sonaverta_history_v10', JSON.stringify(newHistory));
   };
 
   const handleClearHistory = () => {
     setHistory([]);
-    localStorage.removeItem('voiceforge_history_v9');
+    localStorage.removeItem('sonaverta_history_v10');
   };
 
   const playVoiceSample = async (voice: VoiceOption, e: React.MouseEvent) => {
@@ -273,7 +273,7 @@ const VoiceForge = () => {
     const url = URL.createObjectURL(wavBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `VoiceForge-${item.id}.wav`;
+    a.download = `SonaVerta-${item.id}.wav`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -310,7 +310,7 @@ const VoiceForge = () => {
             <Mic className="text-white w-7 h-7" />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-2xl font-black tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">VoiceForge</h1>
+            <h1 className="text-2xl font-black tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">SonaVerta</h1>
             <span className="text-[10px] uppercase tracking-widest text-gray-500 font-black">AI Studio Engine</span>
           </div>
         </div>
@@ -344,9 +344,9 @@ const VoiceForge = () => {
             <Sparkles size={14} className="text-indigo-400" />
             <span className="uppercase tracking-widest font-black">Pro Mastering</span>
           </div>
-          <p className="text-[11px] text-gray-400 leading-relaxed mb-4 font-medium">Calibrated for broadcast-quality narration in 14+ languages.</p>
+          <p className="text-[11px] text-gray-400 leading-relaxed mb-4 font-medium">Unique broadcast-quality narration engine supporting 14+ languages.</p>
           <div className="text-[10px] text-indigo-400 flex items-center gap-2 font-bold opacity-70">
-            v9.0 Master Release
+            v10.0 Prime Release
           </div>
         </div>
       </div>
@@ -363,8 +363,8 @@ const VoiceForge = () => {
             {activeTab === 'editor' ? (
               <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
                 <header>
-                  <h2 className="text-5xl font-black mb-3 tracking-tight">Vocal Studio</h2>
-                  <p className="text-gray-500 font-semibold text-lg">Select mandatory options below to synthesize your master capture.</p>
+                  <h2 className="text-5xl font-black mb-3 tracking-tight">SonaVerta Studio</h2>
+                  <p className="text-gray-500 font-semibold text-lg">Select mandatory options below to synthesize your unique master capture.</p>
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -490,7 +490,7 @@ const VoiceForge = () => {
                 <header className="flex items-center justify-between">
                   <div>
                     <h2 className="text-5xl font-black mb-3 tracking-tight">Archive Vault</h2>
-                    <p className="text-gray-500 font-semibold text-lg">Manage and download your historical master captures.</p>
+                    <p className="text-gray-500 font-semibold text-lg">Manage and download your historical SonaVerta captures.</p>
                   </div>
                   {history.length > 0 && (
                     <button 
@@ -537,7 +537,7 @@ const VoiceForge = () => {
                             onClick={() => {
                               const newHistory = history.filter(h => h.id !== item.id);
                               setHistory(newHistory);
-                              localStorage.setItem('voiceforge_history_v9', JSON.stringify(newHistory));
+                              localStorage.setItem('sonaverta_history_v10', JSON.stringify(newHistory));
                             }}
                             className="p-4 bg-white/5 border border-white/10 text-gray-500 rounded-[1.25rem] hover:bg-red-600/20 hover:text-red-400 transition-all"
                            >
@@ -605,4 +605,4 @@ const VoiceForge = () => {
   );
 };
 
-createRoot(document.getElementById('root')!).render(<VoiceForge />);
+createRoot(document.getElementById('root')!).render(<SonaVerta />);
